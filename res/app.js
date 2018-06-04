@@ -47,6 +47,10 @@ function vectorSub(vector1, vector2){ return Matter.Vector.sub(vector1, vector2)
 //Memorizza la forza da applicare per questo secondo
 var appExecutionVel;
 function setForces(vector){ appExecutionVel = vector; }
+function setVelocity(vel){
+   setForces( vectorSub(vel,getVelocity()));
+
+}
 
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -60,10 +64,11 @@ function init(){
 	
 }
 
+
 function loop(){
 	
 	DEBUG("x:" + getPosition().x);
-	setForces( vectorSub({x: 400, y:300}, getPosition()));
+	setVelocity( {x: 0.3, y:0});
 }`,
 	
 	initWorld: function(){
@@ -73,9 +78,9 @@ function loop(){
 		// Crea lo spheres rosso
 		appSphereRosso = Matter.Bodies.circle(200, 300, 40, {
 						density: 0.1,
-						frictionAir: 0.0001,
-						restitution: 0.3,
-						friction: 0.2,
+						frictionAir: 0,
+						restitution: 0,
+						friction: 0,
 						render: {
 							sprite: {
 								texture: 'res/textures/red.png'
@@ -127,11 +132,10 @@ function loop(){
 	//Codice che gestisce l'esecuzione
 	startExecution: function(){
 		
-		//Opzioni
-		var EXECUTION_MAX_TIME = 100;     //Durata della simulazione
+
 		
 		//Si prepara per lanciare la simulazione
-		clearInterval(appExecutionTimer); //Interrompe le simulazioni lanciate precendemente
+		onExecution = false;              //Interrompe le simulazioni lanciate precendemente
 		$("#output").html("");		      //Pulisce la console
 		appCurrentTime = 0;               //Resetta il cronometro
 
@@ -146,25 +150,30 @@ function loop(){
 		
 		
 		//Valida il codice
-		if(eval(getSafeCode("esprima.parseScript(editor.getValue());"))) return;
+		if(window.eval(getSafeCode("esprima.parseScript(editor.getValue());"))) return;
 		
 		//Init
-		eval(editor.getValue());
-		if(eval(getSafeCode("init();"))) return;
+		window.eval(editor.getValue());
+		if(window.eval(getSafeCode("init();"))) return;
 		
+		onExecution = true;
 
-		//Inizia il loop();
-		appExecutionTimer = setInterval(function(){
+			
+	},
+	
+	onExecution: function(){
+		//Opzioni
+		var EXECUTION_MAX_TIME = 100;     //Durata della simulazione
 		
-			//Aggiorna il numero dei secondi passati
+		//Aggiorna il numero dei secondi passati
 			appCurrentTime++;
 			
 			//Controlla se sono già passati 100 secondi
 			if( appCurrentTime <= EXECUTION_MAX_TIME){
 				
 				//Se non ci sono problemi, esegue il loop
-				if(eval(getSafeCode("loop();"))){
-					clearInterval(appExecutionTimer);
+				if(window.eval(getSafeCode("loop();"))){
+					onExecution = false;
 					return;
 				}
 				
@@ -175,20 +184,16 @@ function loop(){
 			}else{
 				
 				//Se sono già passati 100 secondi, avvisa che la simulazione è terminata
-				clearInterval(appExecutionTimer); //Blocca l'esecuzione del loop();
+				onExecution = false;      //Blocca l'esecuzione del loop();
 				$("#output").html($("#output").html() + '<span style="color: blue;">Simulazione terminata!<br></span>');
 				$("#output").scrollTop($("#output")[0].scrollHeight);	
-			}
-		}, 100);
-			
+			}		
 	},
-	
-	
 	
 	
 	//Termina l'esecuzione
 	endExecution: function(){
-		clearInterval(appExecutionTimer);	//Blocca l'esecuzione del loop();	
+		onExecution = false;	//Blocca l'esecuzione del loop();	
 	}
 	
 	

@@ -110,7 +110,16 @@
 		// run the engine and the renderer
 		Matter.Engine.run(engine);  	Matter.Render.run(render);
 
-
+		var counter = 0;
+		var onExecution = false;
+		Matter.Events.on(engine, 'beforeUpdate', function(event) {
+			counter++;
+			if (counter >= 10 ) {
+				if(onExecution) app.onExecution();
+				// reset counter
+				counter = 0;
+			}
+		});
 
 
 		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
