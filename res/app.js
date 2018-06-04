@@ -4,7 +4,7 @@
 
 //Aggiunge il debug a un elemento della console e va a capo
 function DEBUG(out){		
-	$("#output").html($("#output").html() + getTime()  + "s ~ " + out + "<br>");
+	$("#output").html($("#output").html() + getTime()  + "0s ~ " + out + "<br>");
 	$("#output").scrollTop($("#output")[0].scrollHeight);	
 }
 
@@ -41,16 +41,25 @@ function getPosition(){return {x: appSphereRosso.position.x, y: appSphereRosso.p
 function getVelocity(){return {x: appSphereRosso.velocity.x, y: appSphereRosso.velocity.y}; }
 
 //Funzioni matematiche
+function vectorMagnitude(vector1) { return Matter.Vector.magnitude(vector1);}
+
 function vectorAdd(vector1, vector2){ return Matter.Vector.add(vector1, vector2);}
 function vectorSub(vector1, vector2){ return Matter.Vector.sub(vector1, vector2);}
+
+function vectorMult(vector1, scalar){ return Matter.Vector.mult(vector1, scalar);}
+function vectorDiv(vector1, scalar){ return Matter.Vector.div(vector1, scalar);}
+function vectorScale(vector1, scalar){ return Matter.Vector.mult(Matter.Vector.normalise(vector1), scalar);}
+
 
 //Memorizza la forza da applicare per questo secondo
 var appExecutionVel;
 function setForces(vector){ appExecutionVel = vector; }
-function setVelocity(vel){
-   setForces( vectorSub(vel,getVelocity()));
-
+function setVelocity(vel){ setForces( vectorSub(vel,getVelocity())); }
+function setPosition(pos){
+  var vectBet = vectorSub(pos, getPosition());
+ 	setVelocity(vectorScale(vectBet, Math.sqrt(vectorMagnitude(vectBet)*2*0.009) ));
 }
+
 
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -68,7 +77,8 @@ function init(){
 function loop(){
 	
 	DEBUG("x:" + getPosition().x);
-	setVelocity( {x: 0.3, y:0});
+	setPosition( {x: 400, y:300});
+	
 }`,
 	
 	initWorld: function(){
@@ -179,7 +189,7 @@ function loop(){
 				
 				//Applica le forze specificate dal programma
 				//L'accelerazione massima applicabile deve avere modulo massimo = 1
-				Matter.Body.setVelocity(appSphereRosso, Matter.Vector.add(Matter.Vector.magnitude(appExecutionVel) > 1 ? Matter.Vector.normalise(appExecutionVel) : appExecutionVel, appSphereRosso.velocity));
+				Matter.Body.setVelocity(appSphereRosso, Matter.Vector.add(vectorMagnitude(appExecutionVel) > 0.1 ? vectorScale(appExecutionVel, 0.1) : appExecutionVel, appSphereRosso.velocity));
 
 			}else{
 				
