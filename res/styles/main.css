@@ -1,0 +1,164 @@
+
+
+
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  Colori e font degli elementi
++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+body{
+	background-color: #F8F8F8;
+}
+
+#navbar{
+	background-color:#23629f;	
+}
+
+#console{
+	background-color: white;
+}
+
+.CodeMirror, #console {
+	border: 1px solid #eee;
+}
+
+#console, #output {
+    font-family: "Lucida Console", Monaco, monospace;
+    font-size: small;
+}
+
+
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  Posizione 
++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+#renderDiv, #editor, #navbar, #console, #output{
+	position: fixed;
+}
+
+.CodeMirror {
+	height: auto;
+}
+
+
+#renderDiv{
+	right: 20px;
+	width: 80vh;
+	height: 60vh;		
+	top: 20px;
+}
+
+#editor{
+	left: 20px;
+	width: calc(100vw - 80vh - 60px);
+	top: 75px;
+	bottom: 20px;
+	height: (100vh -95px);
+}
+
+#navbar{
+	left: 20px;
+	width: calc(100vw - 80vh - 60px);
+	top: 20px;
+	bottom: 20px;
+	height: 55px;
+}
+
+#console{
+	right: 20px;
+	width: 80vh;
+	height: calc(40vh -60px);		
+	top: calc(60vh + 40px);
+	bottom: 34px;
+}
+
+#output{
+	right: 22px;
+	width: calc(80vh - 4px);
+	top: calc(60vh + 80px);
+	overflow: auto;
+	bottom: 22px;
+}
+
+
+
+@media (max-width: calc(80vh + 600px)) { 
+		
+	#renderDiv{
+		right: 20px;
+		width: 40vw;
+		height: 30vw;		
+		top: 20px;
+	}
+
+	#editor{
+		left: 20px;
+		width: calc(60vw - 60px);
+		top: 75px;
+		bottom: 20px;
+		height: (100vh -95px);
+	}
+
+	#navbar{
+		left: 20px;
+		width: calc(60vw - 60px);
+		top: 20px;
+		bottom: 20px;
+		height: 55px;
+	}
+
+	#console{
+		right: 20px;
+		width: 40vw;
+		height: calc(100vh -30vw - 60px);		
+		top: calc(30vw + 40px);
+		bottom: 34px;
+	}
+
+	#output{
+		right: 22px;
+		width: calc(40vw - 4px);
+		top: calc(30vw + 78px);
+		height: calc(100vh -30vw - 106px);		
+		overflow: auto;
+	}
+}
+
+
+@media (max-width: calc(800px)) { 
+		
+	#renderDiv{
+		right: 20px;
+		width: 48vw;
+		height: 36vw;	
+		top: calc(100vh - 36vw - 20px);	
+	}
+
+	#editor{
+		left: 20px;
+		width: calc(100vw - 40px);
+		bottom: calc(36vw + 20px);	
+		height: (100vh -95px);
+	}
+
+	#navbar{
+		left: 20px;
+		width: calc(100vw - 40px);
+		bottom: calc(36vw + 35px);
+		height: 55px;
+	}
+
+	#console{
+		left: 20px;
+		width: calc(52vw - 60px);
+		height: 36vw;		
+		top: calc(100vh - 36vw - 20px);	
+	}
+
+	#output{
+		left: 22px;
+		width: calc(52vw - 64px);
+		top: calc(100vh - 36vw + 20px);	
+		height: calc(36vw - 54px);		
+		overflow: auto;
+	}
+}

@@ -1,0 +1,137 @@
+<html>
+<head>
+	
+	<title>Zeroeditor - v 1.1.0</title>
+	
+	<!-- jQuery -->
+	<script src="res/scripts/jquery.js"></script>
+	
+	<!-- Engine fisico Matter.js-->
+	<script src="res/scripts/matter.js"></script> 
+
+	<!-- Validatore di codice Esprima-->
+	<script src="res/scripts/esprima.js"></script> 
+	
+	<!-- Editor di codice CodeMirror -->
+	<link rel="stylesheet" href="res/codemirror/lib/codemirror.css">
+	<link rel="stylesheet" href="res/codemirror/addon/hint/show-hint.css">
+	<script src="res/codemirror/lib/codemirror.js"></script>
+	<script src="res/codemirror/addon/hint/show-hint.js"></script>
+	<script src="res/codemirror/addon/hint/javascript-hint.js"></script>
+	<script src="res/codemirror/mode/javascript/javascript.js"></script>
+	<script src="res/codemirror/mode/markdown/markdown.js"></script>
+	
+	
+	<!-- Carica il gioco attuale -->
+	<script src="res/app.js"></script>
+	
+	
+	<!-- Stili css, per posizioni e colori -->
+	<link rel="stylesheet" href="res/styles/main.css">
+
+
+</head>
+<body>
+	
+	
+	
+	
+	<!-- Elemento in cui verrà effettuato il render -->
+	<div id="renderDiv"></div>
+	
+	<!-- Contiene il tasto per l'esecuzione del codice e il debug -->
+	<div id="console">
+		<p>Console	<button id="execute">Esegui</button><button id="stop">Stop</button></p>
+		<hr><p id="output"></p>
+	</div>
+
+	<!-- Navbar con la scritta/il logo "Zerorobotics -->
+	<div id="navbar"><img height=35px src="res/textures/logo.gif" style="margin: 10px;"></img></span></div>
+	
+	<!-- Editor di codice -->
+	<form id="editor">
+	<script>document.write('<textarea id="code" name="code">' + app.startingCode + '</textarea>');</script>	</form>
+	
+	
+	
+	
+	
+	
+	<script>
+
+
+		//In caso avvenga un errore in qualsiasi momento, avvisa l'utente e ferma eventuali simulazioni
+		window.onerror = function (){
+		  DEBUG_ERROR("");
+		  clearInterval(appExecutionTimer);
+
+		}
+
+		//Inizializza l'editor di codice settando sul javascript
+		var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+		  lineNumbers: true,  viewportMargin: Infinity,  //Resize automatico
+		  extraKeys: {"Ctrl-Space": "autocomplete"},     //Funzione di completamento parole
+		  mode: {name: "javascript", globalVars: true}   //Mette javascript come linguaggio
+		});
+		
+		
+	
+		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		Gestione simulazione - Qui va il codice che fa funzionare l'esecuzione
+		++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
+		$("#execute").click( function(){ app.startExecution();});
+		$("#stop").click( function(){ app.endExecution();});
+
+
+		
+		
+
+		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		Engine - Questo è il codice che inizializza l'engine fisico
+		++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
+		
+		//Inizializza Matter.js
+		var engine = Matter.Engine.create();  //Crea l'Engine fisico
+		var render = Matter.Render.create({   //Crea il Renderer
+			element: document.getElementById("renderDiv"),
+			engine: engine,
+			options: {
+				width: $("#renderDiv").width(),
+				height: $("#renderDiv").height(),
+				showAngleIndicator: false,
+				wireframes: false,
+				hasBounds: true
+			}
+		});
+		
+		//Inizializza il mondo come spiegato nello script app.js
+		app.initWorld();
+		
+		// run the engine and the renderer
+		Matter.Engine.run(engine);  	Matter.Render.run(render);
+
+
+
+
+		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		Resize - Gestisce il ridimensionamento della pagina
+		++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
+		
+		render.bounds.min.x = 0;
+		render.bounds.max.x = 800;
+		render.bounds.min.y = 0;
+		render.bounds.max.y = 600;
+		
+		$( window ).resize(function() {
+		 render.context.canvas.width = $("#renderDiv").width();
+		 render.options.width = $("#renderDiv").width();
+		 render.canvas.width = $("#renderDiv").width();
+		 
+		 render.context.canvas.height = $("#renderDiv").height();
+		 render.options.height = $("#renderDiv").height();
+		 render.canvas.height = $("#renderDiv").height();
+
+		});
+	</script>
+</body>
+</html>
