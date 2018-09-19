@@ -4,12 +4,12 @@
 
 // Aggiunge il debug a un elemento della console e va a capo
 function DEBUG(out){
-  $('#output').html($('#output').html() + getTime() + '0s ~ ' + out + '<br>');
-  $('#output').scrollTop($('#output')[0].scrollHeight);
+  const outputdiv = document.getElementById('output');
+  outputdiv.innerHTML += getTime() + '0s ~ ' + out + '<br>';
+  outputdiv.scrollTo(0, outputdiv.scrollHeight);
 }
 
-
-//Error handling
+// Error handling
 
 //Restituisce true se è avvenuto un errore
 function getSafeCode(code){
@@ -24,8 +24,9 @@ function getSafeCode(code){
 }
 //Stampa una scritta in rosso
 function DEBUG_ERROR(out){
-	$("#output").html($("#output").html() + '<span style="color: red;">'+ out + "<br></span>");
-	$("#output").scrollTop($("#output")[0].scrollHeight);
+  const outputdiv = document.getElementById('output');
+  outputdiv.innerHTML += '<span style="color: red;">' + out + '<br></span>';
+  outputdiv.scrollTo(0, outputdiv.scrollHeight);
 }
 
 
@@ -76,7 +77,7 @@ function init(){
 
 function loop(){
 
-	DEBUG("x:" + getPosition().x);
+	DEBUG('x: ' + getPosition().x.toFixed(2));
 	setPosition( {x: 400, y:300});
 
 }`,
@@ -146,7 +147,9 @@ function loop(){
 
 		//Si prepara per lanciare la simulazione
 		onExecution = false;              //Interrompe le simulazioni lanciate precendemente
-		$("#output").html("");		      //Pulisce la console
+
+    const outputdiv = document.getElementById('output');
+    outputdiv.innerHTML = '';		      //Pulisce la console
 		appCurrentTime = 0;               //Resetta il cronometro
 
 
@@ -193,8 +196,9 @@ function loop(){
 
 			//Se sono già passati 100 secondi, avvisa che la simulazione è terminata
 			onExecution = false;      //Blocca l'esecuzione del loop();
-			$("#output").html($("#output").html() + '<span style="color: blue;">Simulazione terminata!<br></span>');
-			$("#output").scrollTop($("#output")[0].scrollHeight);
+      const outputdiv = document.getElementById('output');
+      outputdiv.innerHTML += '<span style="color: blue;">Simulazione terminata!<br></span>';
+      outputdiv.scrollTo(0, outputdiv.scrollHeight);
 			}
 	},
 

@@ -18,6 +18,9 @@ module.exports = env => {
     output: {
       path: path.join(__dirname, 'dist'),
       filename: 'zeroeditor.min.js',
+      libraryTarget: 'var',
+      libraryExport: 'default',
+      library: 'ZEditor',
     },
     resolve: {
       extensions: ['.js', '.json'],

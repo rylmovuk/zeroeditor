@@ -3,35 +3,25 @@
 
 	<title>Zeroeditor - v 1.2.0</title>
 
-	<!-- jQuery -->
-	<script src="res/scripts/jquery.js"></script>
-
 	<!-- Engine fisico Matter.js-->
 	<script src="res/scripts/matter.js"></script>
 
 	<!-- Validatore di codice Esprima-->
 	<script src="res/scripts/esprima.js"></script>
 
-	<!-- Editor di codice CodeMirror -->
-	<link rel="stylesheet" href="res/codemirror/lib/codemirror.css">
-	<link rel="stylesheet" href="res/codemirror/addon/hint/show-hint.css">
-	<script src="res/codemirror/lib/codemirror.js"></script>
-	<script src="res/codemirror/addon/hint/show-hint.js"></script>
-	<script src="res/codemirror/addon/hint/javascript-hint.js"></script>
-	<script src="res/codemirror/mode/javascript/javascript.js"></script>
-	<script src="res/codemirror/mode/markdown/markdown.js"></script>
 
 
 	<!-- Carica il gioco attuale -->
 	<script src="res/app.js"></script>
-  <script src="../dist/zeroeditor.min.js"></script>
 
+  <!-- Editor di codice CodeMirror -->
+  <link rel="stylesheet" href="../dist/styles.css" />
+  <script src="../dist/zeroeditor.min.js"></script>
 
 
 	<!-- Stili css, per posizioni e colori -->
 
 	<link rel="stylesheet" href="res/styles/main.css">
-  <link rel="stylesheet" href="../dist/styles.css" />
 
 
 </head>
@@ -56,11 +46,6 @@
 	<form id="editor">
 	<script>document.write('<textarea id="code" name="code">' + app.startingCode + '</textarea>');</script>	</form>
 
-
-
-
-
-
 	<script>
 
 
@@ -71,20 +56,21 @@
 
 		}
 
-		//Inizializza l'editor di codice settando sul javascript
-		var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-		  lineNumbers: true,  viewportMargin: Infinity,  //Resize automatico
-		  extraKeys: {"Ctrl-Space": "autocomplete"},     //Funzione di completamento parole
-		  mode: {name: "javascript", globalVars: true}   //Mette javascript come linguaggio
-		});
+    let zEditor = new ZEditor({});
+    window.editor = zEditor.editor;
 
 
 
 		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		Gestione simulazione - Qui va il codice che fa funzionare l'esecuzione
 		++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-		$("#execute").click( function(){ app.startExecution();});
-		$("#stop").click( function(){ app.endExecution();});
+    document.getElementById('execute').addEventListener('click',
+		  function(){ app.startExecution();}
+    );
+
+    document.getElementById('stop').addEventListener('click',
+		  function(){ app.endExecution();}
+    );
 
 
 
@@ -100,8 +86,8 @@
 			element: document.getElementById("renderDiv"),
 			engine: engine,
 			options: {
-				width: $("#renderDiv").width(),
-				height: $("#renderDiv").height(),
+				width: document.getElementById('renderDiv').clientWidth,
+				height: document.getElementById('renderDiv').clientHeight,
 				showAngleIndicator: false,
 				wireframes: false,
 				hasBounds: true
@@ -135,13 +121,13 @@
 		render.bounds.min.y = 0;
 		render.bounds.max.y = 600;
 		window.addEventListener('resize',function() {
-		 render.context.canvas.width = $("#renderDiv").width();
-		 render.options.width = $("#renderDiv").width();
-		 render.canvas.width = $("#renderDiv").width();
+		 render.context.canvas.width = document.getElementById('renderDiv').clientWidth;
+		 render.options.width = document.getElementById('renderDiv').clientWidth;
+		 render.canvas.width = document.getElementById('renderDiv').clientWidth;
 
-		 render.context.canvas.height = $("#renderDiv").height();
-		 render.options.height = $("#renderDiv").height();
-		 render.canvas.height = $("#renderDiv").height();
+		 render.context.canvas.height = document.getElementById('renderDiv').clientHeight;
+		 render.options.height = document.getElementById('renderDiv').clientHeight;
+		 render.canvas.height = document.getElementById('renderDiv').clientHeight;
 
 		});
 	</script>
