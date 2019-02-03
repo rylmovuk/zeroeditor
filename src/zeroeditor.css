@@ -1,0 +1,50 @@
+@import url('./dependencies/codemirror/lib/codemirror.css');
+@import url('./dependencies/codemirror/addon/hint/show-hint.css');
+
+
+#zr-editor {
+	height: calc(100% - 66px);
+	margin: 8px;
+	margin-top: 0px;
+}
+
+#zr-navbar {
+	background-color:#23629f;
+	height: 50px;
+	margin: 8px;
+	margin-bottom: 0px;
+}
+
+
+#zr-navbar > img {
+	margin: 11px;
+	height: 28px;
+}
+
+#zr-game {
+	background-color: red; width: 600px; margin: 8px; height: 450px;
+	
+}
+
+#zr-console {
+	font-family: "Lucida Console", Monaco, monospace;
+	padding: 20px;
+	background-color: white; flex: 1;  margin: 8px; border-radius: 12px;
+}
+
+.CodeMirror, #zr-console {
+	border: 1px solid #eee;
+}
+
+#zr-console .title {
+	font-weight: 400;
+	font-size: 1.6em;
+}
+
+#zr-console .output {
+	font-size: small;
+}
+
+.CodeMirror {
+	height: auto;
+}

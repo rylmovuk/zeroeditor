@@ -1,0 +1,108 @@
+<html>
+<head>
+	<title>Zeroeditor - v 1.3.0</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script src="./dist/zeroeditor.js"></script>
+	<link rel="stylesheet" href="./dist/zeroeditor.css">
+</head>
+<body style="background-color: #F8F8F8;">
+	
+<script>
+const zEditorCode = `
+this.init = function(){
+
+}
+
+
+this.loop = function(){
+
+  debug('x: ' + getPosition().x.toFixed(2));
+  setPosition( {x: 400, y:300});
+
+}`;		
+		
+</script>
+		
+<script>
+	
+  var zEditor = new ZeroEditor(new function(){
+		this.el = 'body';
+		this.code = zEditorCode;
+		this.logo = './example/textures/logo.gif'
+		
+		
+		this.world = {
+			width:       800,
+			height:      600,
+			gravity: { x: 0, y: 0, },
+			background:  './example/textures/space.png',
+			walls:       true
+		};
+		
+		
+			
+		this.createSprites = function(){
+      this.redSphere = Matter.Bodies.circle(200, 300, 40, {
+        density: 0.1, frictionAir: 0, restitution: 0, friction: 0,
+        render: { sprite: { texture: './example/textures/red.png' } }
+      });
+      this.blueSphere = Matter.Bodies.circle(600, 300, 40, {
+        density: 0.1, frictionAir: 0.0001, restitution: 0.3, friction: 0.2,
+        render: { sprite: { texture: './example/textures/blue.png' } }
+      });
+		}
+
+		
+		// Memorizzo la forza dello sphere
+		let sphereForces = {x: 0, y: 0}; 
+		this.events = {
+			onCreate: function(firstTime) {},
+			onStart: function(){ zEditor.code.init(); },
+			onStop: function(){ },
+
+			// Every 60Fps when running
+			onLoop: function(){
+				if(zEditor.getTime() % 6 === 0){
+					zEditor.code.loop();
+					Matter.Body.setVelocity(
+						zEditor.sprites.redSphere,
+						Matter.Vector.add(
+							zEditor.api.vectorMagnitude(sphereForces) > 0.1 ?
+							zEditor.api.vectorScale(sphereForces, 0.1) :
+							sphereForces,
+							zEditor.sprites.redSphere.velocity
+						)
+					);
+				};
+				if( zEditor.getTime() > (100 * 6)) zEditor.stop();
+			},
+		};
+
+					
+		this.api = {
+			...ZeroEditor.import('vector'),
+			getTime: function(){ return Math.ceil(zEditor.getTime()/6); },
+
+			//Game info
+			getPosition: function(){	return Object.assign({}, zEditor.sprites.redSphere.position) },
+			getVelocity: function(){	return Object.assign({}, zEditor.sprites.redSphere.velocity) },
+
+			//Movement functions
+			setForces  : function(vec){ sphereForces = vec; },
+			setVelocity: function(vel){
+				zEditor.api.setForces( zEditor.api.vectorSub(vel, zEditor.api.getVelocity()));
+			},
+			setPosition: function(pos){
+				const vBetw = zEditor.api.vectorSub(pos, zEditor.api.getPosition());
+				zEditor.api.setVelocity( zEditor.api.vectorScale(
+					vBetw, Math.sqrt(zEditor.api.vectorMagnitude(vBetw)*2*0.009)
+				));
+			},
+		};
+		
+		
+	})
+</script>
+	
+</body>
+</html>
