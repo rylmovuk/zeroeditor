@@ -76,7 +76,7 @@ zEditor.getTime()
 zEditor.sprites; zEditor.api; zEditor.events;
 ```
 
-### Eamples
+### Examples
 I've put an example.html file inside root folder.  
 New examples will be posted soon.  
 
@@ -89,3 +89,8 @@ Clone with git, open a terminal and type:
 Then you could use:
 - `npm run build` - production build, will create zeroeditor.js and zeroeditor.css on /dist folder
 Internally, rollup and cleancss are used to minify/compile code
+  
+  
+## License
+Distributed under [GPL 3+](LICENSE.md)
+CodeMirror and Matter.js are licensed under [Mit license](http://opensource.org/licenses/MIT).
