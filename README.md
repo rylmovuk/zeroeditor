@@ -32,9 +32,53 @@ var zEditor = new ZeroEditor(new function(){
 Below a complete list of the constructor's options.
 ```javascript
 var zEditor = new ZeroEditor(new function(){
-	this.el = 'body'       // Root element. Could be either body or another valid querySelector
+	this.el = 'body'               // Root element. Could be either body or another valid querySelector
+	this.logo = './img/myLogo.gif' // Logo to place on code editor's navbar
+
+	
+	/* Default code placeholder */
+	this.code = `this.functionToComplete = function(){
+		// Hey student, you shoud complete this function to solve the challenge
+	}`;
+		
+	
+	/* Information about game's world */
+	this.world = {
+		width:       800,                // Width in virtual unit of measurement
+		height:      600,                // Height in virtual unit of measurement
+		gravity: { x: 0, y: 1, },        // Gravity. {x: 0, y:0} means space
+		background:  './background.png', // Adds an image on screen background
+		walls:       true                // Prevent objects to go out of screen
+	};
 	
 	
+	/* World sprites constructor. Could be either a class or
+	a constructor function. It will be call every time simulation is reset.
+	See Matter.js docs about bodies for a complete documentation
+	http://brm.io/matter-js/docs/classes/Bodies.html */
+	this.createSprites = function(){
+		this.myObject = Matter.Bodies.circle(200, 300, 40, {
+			density: 0.1, frictionAir: 0, restitution: 0, friction: 0,
+			render: { sprite: { texture: './objectTexture.png' } }
+		});
+	}
+	
+	/* Here is where your game logic goes. Inside events you should:
+	- update game world
+	- call user functions with zEditor.code.functionWrittenByStudent()
+	- calculate things like score and so on */
+	this.events = {
+		onStart (){ },  // Called when simulation starts
+		onStop  (){ },  // Called when simulation stops
+    onLoop  (){ }   // Called every Matter.js tick    
+	};
+	
+	
+	/* Api avaible to user */
+	this.api = {
+		
+		
+	}
 })
 ```
 ### ZeroEditor Api
@@ -73,7 +117,9 @@ zEditor.getTime()
  and make them avaible for further editing.
  Please note zEditor.api will also contain default api function
  such as zEditor.api.debug(), zEditor.api.info(), zEditor.api.error() */
-zEditor.sprites; zEditor.api; zEditor.events;
+zEditor.sprites; 
+zEditor.api; 
+zEditor.events;
 ```
 
 ### Examples
@@ -92,5 +138,5 @@ Internally, rollup and cleancss are used to minify/compile code
   
   
 ## License
-Distributed under [GPL 3+](LICENSE.md)
+Distributed under [GPL 3+](LICENSE.md)  
 CodeMirror and Matter.js are licensed under [Mit license](http://opensource.org/licenses/MIT).
