@@ -21,7 +21,6 @@ export default class Sandbox{
 	
 	// Esegue del codice
 	run(src){
-		console.log(src)
 		src = 'with (sandbox) { return new function(){' + src + '}}';
 		const code = new Function('sandbox', src);
 		return code(this._sandbox);

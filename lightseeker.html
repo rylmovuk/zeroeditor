@@ -1,0 +1,206 @@
+<html>
+<head>
+	<title>Zeroeditor - v 1.3.0</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script src="./dist/zeroeditor.js"></script>
+	<link rel="stylesheet" href="./dist/zeroeditor.css">
+</head>
+<body style="background-color: #F8F8F8;">
+	
+<script>
+const zEditorCode = `
+this.init = function(){
+
+}
+
+
+this.loop = function(){
+
+  debug('x: ' + getPosition().x.toFixed(2) + getString());
+  setPosition( {x: 400, y:300});
+
+}`;		
+		
+</script>
+		
+<script>
+
+	// Equazione scelta
+	let eqString = '10x + y = 0'
+	let eqExplicit = {m: 1, q: 300}
+  
+	
+	
+	
+	const eqStrings = [
+		"2x +y = 400",
+		"100 = 4x -0.5y",
+		"y = - 1000 +16x",
+		"2x = 4y +400",
+		"2x +10y = 1500",
+		"3500 -10y = -x",
+		"850 -x = 5y",
+		"x = 3400 -10y",
+		"10x -140 = 2y",
+		"-12x = y -1250",
+		"y +5x = 600",
+		"20y -12x = -200",
+		"-5y -2x = 1250",
+		"2y +320 = 3x",
+		"y = -0.9x +640",
+		"5y -4x = 140",
+		"0 = 2x -y",
+		"0.7x = y",
+		"0.5y = -12000 + 15x",
+		"740 = 0.8x + y",
+		"6x -400 -5y = 0",
+		"200 = 10y -11x",
+		"4.2x = 3y -360",
+		"-1.8x = 2y - 1200",
+		"-300 +9x -y = 0",
+		"-0.8x = 0.5y -420",
+		"x +y = 20",
+		"0.25y -x = -80",
+		"5x +y = 1000",
+		"0.8x -4y = 1840",
+	]
+	
+	const eqSolved = [
+		[-2, 400],
+		[8, -200],
+		[16, -1000],		
+		[0.5, -100],		
+		[0.2, 150],		
+		[0.1, 350],		
+		[-0.2, 170],		
+		[-0.1, 340],		
+		[5, -70],		
+		[-12, 1250],		
+		[-5, 600],		
+		[0.6, -10],		
+		[0.4, 250],		
+		[1.5, -160],		
+		[-0.9, 640],		
+		[0.8, 140],		
+		[2, 0],		
+		[0.7, 0],		
+		[30, 24000],		
+		[-0.8, 740],		
+		[1.2, -80],		
+		[1.1, 20],		
+		[1.4, -120],		
+		[-0.9, 600],		
+		[9, -300],		
+		[-1.6, 840],		
+		[1, 20],		
+		[4, -320],		
+		[-5, 1000],		
+		[0.2, 460],		
+	]
+	
+	function pickEq(){
+		const random = Math.floor(Math.random()*eqStrings.length)
+		eqString     = eqStrings[random]
+		eqExplicit   = {m: eqSolved[random][0], q: eqSolved[random][1]}
+	}
+
+	
+	
+	
+	
+	
+  var zEditor = new ZeroEditor(new function(){
+		this.el = 'body';
+		this.code = zEditorCode;
+		this.logo = './example/textures/logo.gif'
+		
+		
+		this.world = {
+			width:       800,
+			height:      600,
+			gravity: { x: 0, y: 0, },
+			background:  './example/textures/space.png',
+			walls:       true
+		};
+		
+		
+			
+		this.createSprites = function(){
+      this.redSphere = Matter.Bodies.circle(200, 300, 40, {
+        density: 0.1, frictionAir: 0, restitution: 0, friction: 0,
+        render: { sprite: { texture: './example/textures/red.png' } }
+      });
+      this.light = Matter.Bodies.rectangle(600, 300, 2000, 5, { isStatic: true, isSensor: true });
+		}
+
+		
+		// Memorizzo la forza dello sphere
+		let sphereForces = {x: 0, y: 0}; 
+		
+		this.events = {
+			onCreate: function(firstTime) {},
+			onStart: function(){ 
+				pickEq()
+				let light = zEditor.sprites.light
+				Matter.Body.setPosition(light, {x :0, y: eqExplicit.q})
+				Matter.Body.rotate(light, Math.atan(eqExplicit.m))
+				zEditor.api.info('equation: ' + eqString + ', parsed: y = ' + eqExplicit.m + 'x + ' + eqExplicit.q)
+				zEditor.code.init(); 
+			},
+			onStop: function(){ 
+			  zEditor.api.info('Game ended!')
+				const x0 = zEditor.sprites.redSphere.position.x
+				const y0 = zEditor.sprites.redSphere.position.y
+				
+				const distance = (Math.abs(eqExplicit.m*x0  - y0 + eqExplicit.q) / Math.sqrt(eqExplicit.m*eqExplicit.m + 1))
+				zEditor.api.info(distance <40 ? 'Mission succeed'  : 'Mission failed' + '     distance: ' + distance)
+
+			},
+
+			// Every 60Fps when running
+			onLoop: function(){
+				if(zEditor.getTime() % 6 === 0){
+					zEditor.code.loop();
+					Matter.Body.setVelocity(
+						zEditor.sprites.redSphere,
+						Matter.Vector.add(
+							zEditor.api.vectorMagnitude(sphereForces) > 0.1 ?
+							zEditor.api.vectorScale(sphereForces, 0.1) :
+							sphereForces,
+							zEditor.sprites.redSphere.velocity
+						)
+					);
+				};
+				if( zEditor.getTime() > (30 * 10)) zEditor.stop();
+			},
+		};
+
+					
+		this.api = {
+			...ZeroEditor.import('vector'),
+			getTime: function(){ return Math.ceil(zEditor.getTime()/10); },
+			getString : function(){ return eqString},
+
+			//Game info
+			getPosition: function(){	return Object.assign({}, zEditor.sprites.redSphere.position) },
+			getVelocity: function(){	return Object.assign({}, zEditor.sprites.redSphere.velocity) },
+
+			//Movement functions
+			setForces  : function(vec){ sphereForces = vec; },
+			setVelocity: function(vel){
+				zEditor.api.setForces( zEditor.api.vectorSub(vel, zEditor.api.getVelocity()));
+			},
+			setPosition: function(pos){
+				const vBetw = zEditor.api.vectorSub(pos, zEditor.api.getPosition());
+				zEditor.api.setVelocity( zEditor.api.vectorScale(
+					vBetw, Math.sqrt(zEditor.api.vectorMagnitude(vBetw)*2*0.009)
+				));
+			},
+		};
+		
+		
+	})
+</script>
+	
+</body>
+</html>

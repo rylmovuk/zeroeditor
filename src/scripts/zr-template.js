@@ -10,7 +10,7 @@ export default class Template{
   defaultTemplate(logo){
   	return 	`<table style="height: 100%">
 						<tr style="height: 100%">
-							<td style="height: 100%; width: 100%">
+							<td style="height: 100%; width: 100%; max-width: calc(100vw - 640px)">
 								<div id="zr-navbar">
 									<img src="${logo}"></img>
 								</div>
@@ -54,17 +54,23 @@ export default class Template{
 		let p = document.createElement('p')
 		p.style.color = 'blue'
 		p.append(document.createTextNode(string))
-		document.querySelector('#zr-console .output').append(p);	
+		const out = document.querySelector('#zr-console .output')
+		out.append(p);	
+		out.scrollTo(0, out.scrollHeight)
 	}
 	debug(string){
 		let p = document.createElement('p')
 		p.append(document.createTextNode(string))
-		document.querySelector('#zr-console .output').append(p);
+		const out = document.querySelector('#zr-console .output')
+		out.append(p);	
+		out.scrollTo(0, out.scrollHeight)
 	}
 	error(string){
 		let p = document.createElement('p')
-		p.style.color = 'blue'
+		p.style.color = 'red'
 		p.append(document.createTextNode(string))
-		document.querySelector('#zr-console .output').append(p);	
+		const out = document.querySelector('#zr-console .output')
+		out.append(p);	
+		out.scrollTo(0, out.scrollHeight)
 	}
 }

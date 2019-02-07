@@ -37,13 +37,12 @@ export default class ZeroEditor{
     Matter.Events.on(zEditor.engine, 'beforeUpdate', function(event) {
       if (zEditor._isStart) {
         if (zEditor.events.onLoop)
-				console.log('running')
-
           try {
             zEditor.events.onLoop.call(this);
             zEditor._time++;
           } catch (e) {
-            console.log(e);
+						zEditor.api.error(e.message);
+						zEditor.stop()
           }
       }
     });
@@ -142,7 +141,7 @@ export default class ZeroEditor{
     try {
       this.events.onCreate.call(this, true);
     } catch (e) {
-      console.log(e);
+      zEditor.api.error(e.message);
     }
   }
 
@@ -160,14 +159,19 @@ export default class ZeroEditor{
   /** Start (reset if not) */
   start() {
     this.reset();
-    this.code = this._sandbox.run(this._editor.getValue());
+		try{
+    	this.code = this._sandbox.run(this._editor.getValue());
+		}catch(e){
+			this.api.error('Can\'t parse code: ' + e.message)
+			return
+		}
     this._isStart = true;
     this._isReset = false;
     if (this.events.onStart)
       try {
         this.events.onStart.call(this);
       } catch (e) {
-        console.log(e);
+				zEditor.api.error(e.message);
       }
   }
 

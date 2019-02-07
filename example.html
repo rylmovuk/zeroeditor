@@ -81,8 +81,7 @@ this.loop = function(){
 					
 		this.api = {
 			...ZeroEditor.import('vector'),
-			getTime: function(){ return Math.ceil(zEditor.getTime()/6); },
-
+			
 			//Game info
 			getPosition: function(){	return Object.assign({}, zEditor.sprites.redSphere.position) },
 			getVelocity: function(){	return Object.assign({}, zEditor.sprites.redSphere.velocity) },
